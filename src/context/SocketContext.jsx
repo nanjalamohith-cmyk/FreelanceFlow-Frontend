@@ -34,7 +34,7 @@ export const SocketProvider = ({ children }) => {
 
     const token = localStorage.getItem('accessToken');
     const client = new Client({
-      webSocketFactory: () => new SockJS('/ws'),
+      webSocketFactory: () => new SockJS(import.meta.env.VITE_WS_URL || '/ws'),
       connectHeaders: {
         Authorization: token ? `Bearer ${token}` : '',
       },
