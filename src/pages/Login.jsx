@@ -19,10 +19,17 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password');
+      const serverMsg = err.response?.data?.message;
+      if (serverMsg) {
+        setError(serverMsg);
+      } else if (err.code === 'ERR_NETWORK' || !err.response) {
+        setError('Cannot connect to backend server. Please verify backend is running.');
+      } else {
+        setError('Invalid email or password');
+      }
     } finally {
       setLoading(false);
     }
@@ -31,6 +38,7 @@ export default function Login() {
   const setPreset = (e, p) => {
     setEmail(e);
     setPassword(p);
+    setError('');
   };
 
   return (
